@@ -10,9 +10,9 @@ class Player: SKSpriteNode {
     private var particleEmitter: SKEmitterNode?
 
     init() {
-        // Create a star-shaped texture (we'll use a simple circle for now, can be replaced with asset)
-        let texture = Player.createStarTexture()
-        super.init(texture: texture, color: .yellow, size: CGSize(width: 40, height: 40))
+        // Use beautiful pre-made star texture
+        let texture = SKTexture(imageNamed: "PlayerStar")
+        super.init(texture: texture, color: .clear, size: CGSize(width: 50, height: 50))
 
         setupPhysics()
         setupParticles()
@@ -32,22 +32,26 @@ class Player: SKSpriteNode {
     }
 
     private func setupParticles() {
-        // Trail effect
+        // Beautiful star trail effect
         particleEmitter = SKEmitterNode()
-        particleEmitter?.particleTexture = SKTexture(imageNamed: "spark")
-        particleEmitter?.particleBirthRate = 20
-        particleEmitter?.particleLifetime = 0.5
-        particleEmitter?.particleScale = 0.1
-        particleEmitter?.particleScaleSpeed = -0.1
-        particleEmitter?.particleAlpha = 0.8
-        particleEmitter?.particleAlphaSpeed = -1.5
-        particleEmitter?.particleColor = .yellow
-        particleEmitter?.particleColorBlendFactor = 1.0
+        particleEmitter?.particleTexture = SKTexture(imageNamed: "StarParticle")
+        particleEmitter?.particleBirthRate = 30
+        particleEmitter?.particleLifetime = 0.8
+        particleEmitter?.particleScale = 0.15
+        particleEmitter?.particleScaleSpeed = -0.12
+        particleEmitter?.particleAlpha = 0.9
+        particleEmitter?.particleAlphaSpeed = -1.2
+        particleEmitter?.particleColor = .init(red: 1.0, green: 0.9, blue: 0.3, alpha: 1.0)
+        particleEmitter?.particleColorBlendFactor = 0.8
+        particleEmitter?.particleColorSequence = nil
         particleEmitter?.position = CGPoint.zero
         particleEmitter?.emissionAngle = .pi
-        particleEmitter?.emissionAngleRange = .pi / 4
-        particleEmitter?.particleSpeed = 50
-        particleEmitter?.particleSpeedRange = 20
+        particleEmitter?.emissionAngleRange = .pi / 3
+        particleEmitter?.particleSpeed = 60
+        particleEmitter?.particleSpeedRange = 30
+        particleEmitter?.particleRotation = 0
+        particleEmitter?.particleRotationSpeed = 2.0
+        particleEmitter?.zPosition = -1
 
         if let emitter = particleEmitter {
             addChild(emitter)
@@ -81,20 +85,36 @@ class Player: SKSpriteNode {
 
         shotCount -= 1
 
-        let projectile = SKSpriteNode(color: .cyan, size: CGSize(width: 10, height: 10))
+        // Use beautiful energy ball texture
+        let texture = SKTexture(imageNamed: "EnergyBall")
+        let projectile = SKSpriteNode(texture: texture, size: CGSize(width: 24, height: 24))
         projectile.position = position
-        projectile.physicsBody = SKPhysicsBody(circleOfRadius: 5)
+        projectile.physicsBody = SKPhysicsBody(circleOfRadius: 12)
         projectile.physicsBody?.categoryBitMask = 8
         projectile.physicsBody?.contactTestBitMask = 2
         projectile.physicsBody?.collisionBitMask = 0
         projectile.physicsBody?.velocity = CGVector(dx: direction.dx * 500, dy: direction.dy * 500)
         projectile.name = "projectile"
+        projectile.zPosition = 8
 
-        // Add glow effect
+        // Add rotation and pulse effect
+        let rotate = SKAction.repeatForever(SKAction.rotate(byAngle: .pi * 2, duration: 0.5))
+        let pulse = SKAction.repeatForever(SKAction.sequence([
+            SKAction.scale(to: 1.2, duration: 0.3),
+            SKAction.scale(to: 1.0, duration: 0.3)
+        ]))
+
+        projectile.run(SKAction.group([rotate, pulse]))
+
+        // Remove after duration
         projectile.run(SKAction.sequence([
             SKAction.wait(forDuration: 2.0),
+            SKAction.fadeOut(withDuration: 0.2),
             SKAction.removeFromParent()
         ]))
+
+        // Play sound effect (when audio is added)
+        // AudioManager.shared.playSoundEffect(named: AudioManager.SoundEffect.shoot)
 
         return projectile
     }

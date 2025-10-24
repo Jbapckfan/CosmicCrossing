@@ -21,9 +21,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
 
     private func setupScene() {
-        backgroundColor = SKColor(red: 0.05, green: 0.05, blue: 0.15, alpha: 1.0)
+        backgroundColor = SKColor(red: 0.02, green: 0.02, blue: 0.08, alpha: 1.0)
         physicsWorld.gravity = .zero
         physicsWorld.contactDelegate = self
+
+        // Add beautiful nebula background
+        let background = SKSpriteNode(imageNamed: "BackgroundNebula")
+        background.position = CGPoint(x: size.width / 2, y: size.height / 2)
+        background.size = size
+        background.zPosition = -100
+        background.alpha = 0.6
+        addChild(background)
 
         // Add starfield background
         createStarfield()
@@ -68,31 +76,59 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
 
     private func setupHUD() {
-        // Score label
+        // Score label with shadow
         scoreLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
-        scoreLabel.fontSize = 24
-        scoreLabel.position = CGPoint(x: 100, y: size.height - 50)
+        scoreLabel.fontSize = 26
+        scoreLabel.position = CGPoint(x: 20, y: size.height - 50)
         scoreLabel.horizontalAlignmentMode = .left
         scoreLabel.zPosition = 100
+        scoreLabel.fontColor = .white
         scoreLabel.text = "Score: 0"
+
+        // Add shadow
+        let scoreShadow = SKLabelNode(fontNamed: "AvenirNext-Bold")
+        scoreShadow.fontSize = 26
+        scoreShadow.fontColor = .black
+        scoreShadow.alpha = 0.5
+        scoreShadow.position = CGPoint(x: 2, y: -2)
+        scoreShadow.zPosition = -1
+        scoreShadow.text = "Score: 0"
+        scoreLabel.addChild(scoreShadow)
         addChild(scoreLabel)
 
-        // Lives label
+        // Lives with heart icons
+        let heartIcon = SKSpriteNode(imageNamed: "IconHeart")
+        heartIcon.setScale(0.3)
+        heartIcon.position = CGPoint(x: size.width - 100, y: size.height - 40)
+        heartIcon.zPosition = 100
+        addChild(heartIcon)
+
         livesLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
-        livesLabel.fontSize = 24
-        livesLabel.position = CGPoint(x: size.width - 100, y: size.height - 50)
-        livesLabel.horizontalAlignmentMode = .right
+        livesLabel.fontSize = 26
+        livesLabel.position = CGPoint(x: size.width - 70, y: size.height - 50)
+        livesLabel.horizontalAlignmentMode = .left
         livesLabel.zPosition = 100
-        livesLabel.text = "Lives: 3"
+        livesLabel.fontColor = .white
+        livesLabel.text = "3"
+
+        let livesShadow = SKLabelNode(fontNamed: "AvenirNext-Bold")
+        livesShadow.fontSize = 26
+        livesShadow.fontColor = .black
+        livesShadow.alpha = 0.5
+        livesShadow.position = CGPoint(x: 2, y: -2)
+        livesShadow.zPosition = -1
+        livesShadow.text = "3"
+        livesLabel.addChild(livesShadow)
         addChild(livesLabel)
 
-        // Shots label
+        // Shots label with icon
         shotsLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
-        shotsLabel.fontSize = 20
+        shotsLabel.fontSize = 22
         shotsLabel.position = CGPoint(x: size.width / 2, y: size.height - 50)
         shotsLabel.horizontalAlignmentMode = .center
         shotsLabel.zPosition = 100
-        shotsLabel.text = "Shots: 5"
+        shotsLabel.fontColor = SKColor(red: 0.5, green: 1.0, blue: 1.0, alpha: 1.0)
+        shotsLabel.text = "⚡ 5"
         addChild(shotsLabel)
     }
 
@@ -191,43 +227,39 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         planet.isSafeZone = true
         planet.canBeDestroyed = false
         planet.zPosition = 5
+        planet.setScale(1.3) // Make safe planets larger
 
-        // Add gentle pulse animation
+        // Add gentle pulse animation with glow
         let pulse = SKAction.sequence([
-            SKAction.scale(to: 1.1, duration: 1.0),
-            SKAction.scale(to: 1.0, duration: 1.0)
+            SKAction.scale(to: 1.4, duration: 1.0),
+            SKAction.scale(to: 1.3, duration: 1.0)
         ])
         planet.run(SKAction.repeatForever(pulse))
+
+        // Add glow effect
+        let glow = SKSpriteNode(imageNamed: "spark")
+        glow.setScale(3.0)
+        glow.alpha = 0.3
+        glow.zPosition = -1
+        glow.run(SKAction.repeatForever(SKAction.sequence([
+            SKAction.fadeAlpha(to: 0.5, duration: 1.0),
+            SKAction.fadeAlpha(to: 0.3, duration: 1.0)
+        ])))
+        planet.addChild(glow)
 
         addChild(planet)
         orbitingObjects.append(planet)
     }
 
     private func createCelestialTexture(isHazard: Bool) -> SKTexture {
-        let size = CGSize(width: 60, height: 60)
-        let renderer = UIGraphicsImageRenderer(size: size)
-
-        let image = renderer.image { context in
-            let center = CGPoint(x: size.width / 2, y: size.height / 2)
-            let radius: CGFloat = 25
-
-            // Create gradient
-            let colors: [UIColor] = isHazard ?
-                [UIColor.red, UIColor.orange, UIColor.yellow] :
-                [UIColor.blue, UIColor.cyan, UIColor.white]
-
-            let path = UIBezierPath(arcCenter: center, radius: radius, startAngle: 0, endAngle: .pi * 2, clockwise: true)
-
-            colors[0].setFill()
-            path.fill()
-
-            // Add some detail
-            UIColor.white.withAlphaComponent(0.3).setFill()
-            let detailPath = UIBezierPath(arcCenter: CGPoint(x: center.x - 8, y: center.y - 8), radius: 8, startAngle: 0, endAngle: .pi * 2, clockwise: true)
-            detailPath.fill()
+        // Use beautiful pre-made textures
+        if isHazard {
+            // Randomly select asteroid or hazard planet
+            let textures = ["Asteroid1", "Asteroid2", "Asteroid3", "PlanetHazard", "PlanetPurple"]
+            return SKTexture(imageNamed: textures.randomElement()!)
+        } else {
+            return SKTexture(imageNamed: "PlanetSafe")
         }
-
-        return SKTexture(image: image)
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -261,8 +293,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     private func updateHUD() {
         scoreLabel.text = "Score: \(player.score)"
-        livesLabel.text = "Lives: \(player.lives)"
-        shotsLabel.text = "Shots: \(player.shotCount)"
+        scoreLabel.childNode(withName: "//shadow")?.removeFromParent()
+        let scoreShadow = scoreLabel.children.first as? SKLabelNode
+        scoreShadow?.text = "Score: \(player.score)"
+
+        livesLabel.text = "\(player.lives)"
+        let livesShadow = livesLabel.children.first as? SKLabelNode
+        livesShadow?.text = "\(player.lives)"
+
+        shotsLabel.text = "⚡ \(player.shotCount)"
     }
 
     private func levelComplete() {
@@ -335,19 +374,37 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
 
     private func destroyObject(_ object: OrbitingObject) {
-        // Explosion effect
+        // Beautiful explosion effect using custom particle texture
         let explosion = SKEmitterNode()
-        explosion.particleBirthRate = 100
-        explosion.numParticlesToEmit = 20
-        explosion.particleLifetime = 0.5
-        explosion.particleScale = 0.2
-        explosion.particleScaleSpeed = -0.2
+        explosion.particleTexture = SKTexture(imageNamed: "ExplosionParticle")
+        explosion.particleBirthRate = 150
+        explosion.numParticlesToEmit = 30
+        explosion.particleLifetime = 0.8
+        explosion.particleScale = 0.5
+        explosion.particleScaleSpeed = -0.3
         explosion.particleAlpha = 1.0
-        explosion.particleAlphaSpeed = -2.0
+        explosion.particleAlphaSpeed = -1.5
         explosion.particleColor = .orange
+        explosion.particleColorBlendFactor = 0.5
+        explosion.emissionAngleRange = .pi * 2
+        explosion.particleSpeed = 100
+        explosion.particleSpeedRange = 50
         explosion.position = object.position
         explosion.zPosition = 50
         addChild(explosion)
+
+        // Flash effect
+        let flash = SKSpriteNode(imageNamed: "spark")
+        flash.position = object.position
+        flash.setScale(0.1)
+        flash.zPosition = 49
+        addChild(flash)
+
+        flash.run(SKAction.sequence([
+            SKAction.scale(to: 2.0, duration: 0.2),
+            SKAction.fadeOut(withDuration: 0.2),
+            SKAction.removeFromParent()
+        ]))
 
         explosion.run(SKAction.sequence([
             SKAction.wait(forDuration: 1.0),
@@ -360,6 +417,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
 
         player.score += 10
+
+        // Play sound effect (when audio is added)
+        // AudioManager.shared.playSoundEffect(named: AudioManager.SoundEffect.explosion)
     }
 
     private func gameOver() {
