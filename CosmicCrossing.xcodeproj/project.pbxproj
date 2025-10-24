@@ -13,7 +13,6 @@
 		A1000004000000000000001 /* OrbitingObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000004000000000000001 /* OrbitingObject.swift */; };
 		A1000005000000000000001 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000005000000000000001 /* Player.swift */; };
 		A1000009000000000000001 /* AudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000010000000000000001 /* AudioManager.swift */; };
-		A1000006000000000000001 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A2000006000000000000001 /* Main.storyboard */; };
 		A1000007000000000000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A2000007000000000000001 /* Assets.xcassets */; };
 		A1000008000000000000001 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A2000008000000000000001 /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
@@ -26,7 +25,6 @@
 		A2000004000000000000001 /* OrbitingObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrbitingObject.swift; sourceTree = "<group>"; };
 		A2000005000000000000001 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		A2000010000000000000001 /* AudioManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioManager.swift; sourceTree = "<group>"; };
-		A2000006000000000000001 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		A2000007000000000000001 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A2000008000000000000001 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A2000009000000000000001 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -60,7 +58,6 @@
 				A2000004000000000000001 /* OrbitingObject.swift */,
 				A2000005000000000000001 /* Player.swift */,
 				A2000010000000000000001 /* AudioManager.swift */,
-				A2000006000000000000001 /* Main.storyboard */,
 				A2000007000000000000001 /* Assets.xcassets */,
 				A2000008000000000000001 /* LaunchScreen.storyboard */,
 				A2000009000000000000001 /* Info.plist */,
@@ -134,7 +131,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A1000006000000000000001 /* Main.storyboard in Resources */,
 				A1000007000000000000001 /* Assets.xcassets in Resources */,
 				A1000008000000000000001 /* LaunchScreen.storyboard in Resources */,
 			);
@@ -159,14 +155,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		A2000006000000000000001 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				A2000006000000000000001 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		A2000008000000000000001 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
